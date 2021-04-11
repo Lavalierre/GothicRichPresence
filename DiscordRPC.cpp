@@ -19,13 +19,15 @@ namespace GOTHIC_ENGINE {
 
 	void GDiscordRPC::SwitchLanguage()
 	{
-		iLang == 0 ? iLang = 1 : iLang = 0;
+		iLang <= 2 ? iLang++ : iLang = 0;
 	}
 
 	void GDiscordRPC::DetectLanguage()
 	{
-		if ( MAKELANGID( LANG_RUSSIAN, SUBLANG_DEFAULT ) == GetSystemDefaultLangID() )
+		if (MAKELANGID(LANG_RUSSIAN, SUBLANG_DEFAULT) == GetSystemDefaultLangID())
 			iLang = 1;
+		else if (MAKELANGID(LANG_POLISH, SUBLANG_DEFAULT) == GetSystemDefaultLangID())
+			iLang = 2;
 		else
 			iLang = 0;
 	}
@@ -58,26 +60,25 @@ namespace GOTHIC_ENGINE {
 				int level = player->level;
 
 				char timeBuffer[ 128 ];
-				if ( iLang == 0 )
-				{
-					sprintf( timeBuffer, "Day %d, %02d:%02d", day, hour, min );
-				}
-				else
-				{
-					sprintf( timeBuffer, "День %d, %02d:%02d", day, hour, min );
-					ConvertString( timeBuffer, timeBuffer );
-				}
+				
+				if (iLang == 1) 
+					sprintf(timeBuffer, "День %d, %02d:%02d", day, hour, min);
+				else if (iLang == 2) 
+					sprintf(timeBuffer, "Dzieс %d, %02d:%02d", day, hour, min);
+				else 
+					sprintf(timeBuffer, "Day %d, %02d:%02d", day, hour, min);
+
+				ConvertString(timeBuffer, timeBuffer);
+
 
 				char infoBuffer[ 128 ];
 
-				if ( iLang == 0 )
-				{
-					sprintf( infoBuffer, "%s, %d lvl.", guildName.ToChar(), level );
-				}
+				if (iLang == 1)
+					sprintf(infoBuffer, "%s, %d ур.", guildName.ToChar(), level);
+				else if (iLang == 2)
+					sprintf(infoBuffer, "%s, %d poziom", guildName.ToChar(), level);
 				else
-				{
-					sprintf( infoBuffer, "%s, %d ур.", guildName.ToChar(), level );
-				}
+					sprintf(infoBuffer, "%s, %d lvl.", guildName.ToChar(), level);
 
 				char *sValidGuildName = new char[ 128 ];
 				ConvertString( infoBuffer, sValidGuildName );
@@ -85,16 +86,16 @@ namespace GOTHIC_ENGINE {
 
 				if ( wName.Search("NEWWORLD.ZEN", 1U) != -1 )
 				{
-					if ( iLang == 0 )
-					{
-						discordPresence.largeImageText = "Khorinis";
-					}
+					char locationName[128];
+					if (iLang == 1)
+						sprintf(locationName, "Хоринис");
+					else if (iLang == 2)
+						sprintf(locationName, "Khorinis");
 					else
-					{
-						char locationName[ 128 ] = "Хоринис";
-						ConvertString( locationName, locationName );
-						discordPresence.largeImageText = locationName;
-					}
+						sprintf(locationName, "Khorinis");
+
+					ConvertString(locationName, locationName);
+					discordPresence.largeImageText = locationName;
 					
 					if ( hour >= 8 && hour < 18 )
 						discordPresence.largeImageKey = "khorinis_day";
@@ -107,16 +108,16 @@ namespace GOTHIC_ENGINE {
 				}
 				else if ( wName.Search( "ADDONWORLD.ZEN", 1U ) != -1 )
 				{
-					if ( iLang == 0 )
-					{
-						discordPresence.largeImageText = "Jharkendar";
-					}
+					char locationName[128];
+					if (iLang == 1)
+						sprintf(locationName, "Яркендар");
+					else if (iLang == 2)
+						sprintf(locationName, "Jarkendar");
 					else
-					{
-						char locationName[ 128 ] = "Яркендар";
-						ConvertString( locationName, locationName );
-						discordPresence.largeImageText = locationName;
-					}
+						sprintf(locationName, "Jharkendar");
+
+					ConvertString(locationName, locationName);
+					discordPresence.largeImageText = locationName;
 
 					if ( hour >= 8 && hour < 18 )
 						discordPresence.largeImageKey = "jharkendar_day";
@@ -129,16 +130,16 @@ namespace GOTHIC_ENGINE {
 				}
 				else if ( wName.Search( "OLDWORLD.ZEN", 1U ) != -1 )
 				{
-					if ( iLang == 0 )
-					{
-						discordPresence.largeImageText = "Valley of Mines";
-					}
+					char locationName[128];
+					if (iLang == 1)
+						sprintf(locationName, "Долина Рудников");
+					else if (iLang == 2)
+						sprintf(locationName, "Gуrnicza Dolina");
 					else
-					{
-						char locationName[ 128 ] = "Долина Рудников";
-						ConvertString( locationName, locationName );
-						discordPresence.largeImageText = locationName;
-					}
+						sprintf(locationName, "Valley of Mines");
+
+					ConvertString(locationName, locationName);
+					discordPresence.largeImageText = locationName;
 
 					if ( hour >= 8 && hour < 18 )
 						discordPresence.largeImageKey = "valley_day";
@@ -151,32 +152,31 @@ namespace GOTHIC_ENGINE {
 				}
 				else if ( wName.Search( "DRAGONISLAND.ZEN", 1U ) != -1 )
 				{
-					if ( iLang == 0 )
-					{
-						discordPresence.largeImageText = "Irdorath";
-					}
+					char locationName[128];
+					if (iLang == 1)
+						sprintf(locationName, "Ирдорат");
+					else if (iLang == 2)
+						sprintf(locationName, "Irdorath");
 					else
-					{
-						char locationName[ 128 ] = "Ирдорат";
-						ConvertString( locationName, locationName );
-						discordPresence.largeImageText = locationName;
-					}
+						sprintf(locationName, "Irdorath");
+
+					ConvertString(locationName, locationName);
+					discordPresence.largeImageText = locationName;
 
 					discordPresence.largeImageKey = "irdorath";
 				}
 				else
 				{
-					if ( iLang == 0 )
-					{
-						discordPresence.largeImageText = "Unknown Lands";
-					}
+					char locationName[128];
+					if (iLang == 1)
+						sprintf(locationName, "Исследование");
+					else if (iLang == 2)
+						sprintf(locationName, "Nieznana Kraina");
 					else
-					{
-						char largeImageText[ 128 ] = "Исследование";
-						ConvertString( largeImageText, largeImageText );
+						sprintf(locationName, "Unknown Lands");
 
-						discordPresence.largeImageText =  largeImageText;
-					}
+					ConvertString(locationName, locationName);
+					discordPresence.largeImageText = locationName;
 
 					discordPresence.largeImageKey = "menu"; // Could be changed to some terrain image
 				}
@@ -187,21 +187,16 @@ namespace GOTHIC_ENGINE {
 		}
 		else
 		{
-			if ( iLang == 0 )
-			{
-				discordPresence.largeImageText = "Menu";
-				discordPresence.state = "Menu";
-			}
+			char gameState[128];
+			if (iLang == 1)
+				sprintf(gameState, "Меню");
+			else if (iLang == 2)
+				sprintf(gameState, "Menu");
 			else
-			{
-				char gameState[ 128 ] = "Меню";
-				char largeImageText[ 128 ] = "Меню";
-				ConvertString( gameState, gameState );
-				ConvertString( largeImageText, largeImageText );
+				sprintf(gameState, "Menu");
 
-				discordPresence.state = gameState;
-				discordPresence.largeImageText = largeImageText;
-			}
+			ConvertString(gameState, gameState);
+			discordPresence.state = gameState;
 
 			discordPresence.largeImageKey = "menu";
 			discordPresence.smallImageKey = "";

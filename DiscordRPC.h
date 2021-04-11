@@ -24,7 +24,7 @@ namespace GOTHIC_ENGINE {
 		GDiscordRPC() = default;
 		static GDiscordRPC oInstance;
 		time_t tStartTimestamp{ 0 };
-		int iLang{ 0 }; // 0 - English, 1 - Russian
+		int iLang{ 0 }; // 0 - English, 1 - Russian, 2 - Polish
 	};
 
 }
