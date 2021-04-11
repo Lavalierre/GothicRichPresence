@@ -81,20 +81,18 @@ namespace GOTHIC_ENGINE {
 
 				char *sValidGuildName = new char[ 128 ];
 				ConvertString( infoBuffer, sValidGuildName );
-				discordPresence.details = sValidGuildName;
+				discordPresence.state = sValidGuildName;
 
 				if ( wName.Search("NEWWORLD.ZEN", 1U) != -1 )
 				{
 					if ( iLang == 0 )
 					{
-						discordPresence.state = "Khorinis";
 						discordPresence.largeImageText = "Khorinis";
 					}
 					else
 					{
 						char locationName[ 128 ] = "Хоринис";
 						ConvertString( locationName, locationName );
-						discordPresence.state = locationName;
 						discordPresence.largeImageText = locationName;
 					}
 					
@@ -111,14 +109,12 @@ namespace GOTHIC_ENGINE {
 				{
 					if ( iLang == 0 )
 					{
-						discordPresence.state = "Jharkendar";
 						discordPresence.largeImageText = "Jharkendar";
 					}
 					else
 					{
 						char locationName[ 128 ] = "Яркендар";
 						ConvertString( locationName, locationName );
-						discordPresence.state = locationName;
 						discordPresence.largeImageText = locationName;
 					}
 
@@ -135,14 +131,12 @@ namespace GOTHIC_ENGINE {
 				{
 					if ( iLang == 0 )
 					{
-						discordPresence.state = "Valley of Mines";
 						discordPresence.largeImageText = "Valley of Mines";
 					}
 					else
 					{
 						char locationName[ 128 ] = "Долина Рудников";
 						ConvertString( locationName, locationName );
-						discordPresence.state = locationName;
 						discordPresence.largeImageText = locationName;
 					}
 
@@ -159,14 +153,12 @@ namespace GOTHIC_ENGINE {
 				{
 					if ( iLang == 0 )
 					{
-						discordPresence.state = "Irdorath";
 						discordPresence.largeImageText = "Irdorath";
 					}
 					else
 					{
 						char locationName[ 128 ] = "Ирдорат";
 						ConvertString( locationName, locationName );
-						discordPresence.state = locationName;
 						discordPresence.largeImageText = locationName;
 					}
 
@@ -176,21 +168,17 @@ namespace GOTHIC_ENGINE {
 				{
 					if ( iLang == 0 )
 					{
-						discordPresence.state = "In Game";
-						discordPresence.largeImageText = "Exploring";
+						discordPresence.largeImageText = "Unknown Lands";
 					}
 					else
 					{
-						char gameState[ 128 ] = "В Игре";
 						char largeImageText[ 128 ] = "Исследование";
-						ConvertString( gameState, gameState );
 						ConvertString( largeImageText, largeImageText );
 
-						discordPresence.state = gameState;
 						discordPresence.largeImageText =  largeImageText;
 					}
 
-					discordPresence.largeImageKey = "menu";
+					discordPresence.largeImageKey = "menu"; // Could be changed to some terrain image
 				}
 
 				discordPresence.smallImageKey = "info";
@@ -215,10 +203,19 @@ namespace GOTHIC_ENGINE {
 				discordPresence.largeImageText = largeImageText;
 			}
 
-			discordPresence.details = "";
 			discordPresence.largeImageKey = "menu";
 			discordPresence.smallImageKey = "";
 			discordPresence.smallImageText = "";
+		}
+
+		if (zgameoptions)
+		{
+			string gameTitle = A zgameoptions->ReadString("Info", "Title", "Gothic II");
+			discordPresence.details = gameTitle;
+		}
+		else
+		{
+			discordPresence.details = "";
 		}
 
 		discordPresence.startTimestamp = tStartTimestamp;
