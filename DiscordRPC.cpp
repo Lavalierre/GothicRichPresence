@@ -66,31 +66,43 @@ namespace GOTHIC_ENGINE {
 			{
 				zSTRING wName = ogame->GetGameWorld()->GetWorldFilename();
 				int hasTimeVersions = FALSE;
+				int kapitel = 0;
 				ogame->GetTime( day, hour, min );
 
 				zSTRING guildName = player->GetGuildName();
 				int level = player->level;
 
+				if (parser->GetSymbol("kapitel"))
+					kapitel = parser->GetSymbol("kapitel")->single_intdata;
+
 				char timeBuffer[ 128 ];
 				
 				if (iLang == 1) 
-					sprintf(timeBuffer, "Äåíü %d, %02d:%02d", day, hour, min);
+					sprintf(timeBuffer, "Äåíü %d - %02d:%02d", day, hour, min);
 				else if (iLang == 2) 
-					sprintf(timeBuffer, "Dzieñ %d, %02d:%02d", day, hour, min);
+					sprintf(timeBuffer, "Dzieñ %d - %02d:%02d", day, hour, min);
 				else 
-					sprintf(timeBuffer, "Day %d, %02d:%02d", day, hour, min);
+					sprintf(timeBuffer, "Day %d - %02d:%02d", day, hour, min);
 
 				ConvertString(timeBuffer, timeBuffer);
-
 
 				char infoBuffer[ 128 ];
 
 				if (iLang == 1)
-					sprintf(infoBuffer, "%s, %d óð.", guildName.ToChar(), level);
+					sprintf(infoBuffer, "%s - %d óð.", guildName.ToChar(), level);
 				else if (iLang == 2)
-					sprintf(infoBuffer, "%s, %d poziom", guildName.ToChar(), level);
+					sprintf(infoBuffer, "%s - %d Poziom", guildName.ToChar(), level);
 				else
-					sprintf(infoBuffer, "%s, %d lvl.", guildName.ToChar(), level);
+					sprintf(infoBuffer, "%s - %d Level", guildName.ToChar(), level);
+
+				if (kapitel) {
+					if (iLang == 1)
+						sprintf(infoBuffer, "%s - %d Ãëàâà", infoBuffer, kapitel);
+					else if (iLang == 2)
+						sprintf(infoBuffer, "%s - %d Rozdzia³", infoBuffer, kapitel);
+					else
+						sprintf(infoBuffer, "%s - %d Chapter", infoBuffer, kapitel);
+				}
 
 				char *sValidGuildName = new char[ 128 ];
 				ConvertString( infoBuffer, sValidGuildName );
@@ -257,7 +269,13 @@ namespace GOTHIC_ENGINE {
 				discordPresence.largeImageText = locationName;
 
 				// Ingame day and time small image display
-				discordPresence.smallImageKey = "info";
+				if (hour >= 8 && hour < 20)
+					discordPresence.smallImageKey = "day";
+				else if (hour >= 20 || hour < 8)
+					discordPresence.smallImageKey = "night";
+				else
+					discordPresence.smallImageKey = "info";
+
 				discordPresence.smallImageText = timeBuffer;
 			}
 		}
