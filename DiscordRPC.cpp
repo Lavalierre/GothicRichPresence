@@ -6,12 +6,23 @@
 namespace GOTHIC_ENGINE {
 	
 	GDiscordRPC GDiscordRPC::oInstance;
+	TEngineVersion engineVersion = Union.GetEngineVersion();
 
 	void GDiscordRPC::Initialize()
 	{
 		DiscordEventHandlers handlers;
 		memset( &handlers, 0, sizeof( handlers ) );
-		Discord_Initialize( "796368615212843018", &handlers, 0, NULL );
+		
+#if defined __G1 || defined __G1A
+		if (engineVersion == Engine_G1 || engineVersion == Engine_G1A)
+			Discord_Initialize("831520290261172266", &handlers, 0, NULL);
+#endif
+
+#if defined __G2 || defined __G2A
+		if (engineVersion == Engine_G2 || engineVersion == Engine_G2A)
+			Discord_Initialize("796368615212843018", &handlers, 0, NULL);
+#endif
+
 		tStartTimestamp = std::time( nullptr );
 
 		DetectLanguage();
@@ -54,6 +65,7 @@ namespace GOTHIC_ENGINE {
 			if ( ogame->GetGameWorld() )
 			{
 				zSTRING wName = ogame->GetGameWorld()->GetWorldFilename();
+				int hasTimeVersions = FALSE;
 				ogame->GetTime( day, hour, min );
 
 				zSTRING guildName = player->GetGuildName();
@@ -84,103 +96,167 @@ namespace GOTHIC_ENGINE {
 				ConvertString( infoBuffer, sValidGuildName );
 				discordPresence.state = sValidGuildName;
 
-				if ( wName.Search("NEWWORLD.ZEN", 1U) != -1 )
-				{
-					char locationName[128];
+				char locationName[128];
+				char imageKey[128];
+				string imageStr, locationStr;
+
+#if defined __G1 || defined __G1A
+				if (engineVersion == Engine_G1 || engineVersion == Engine_G1A)
+
+					if (wName.HasWord("WORLD.ZEN"))
+					{
+						imageStr = "colony";
+						hasTimeVersions = TRUE;
+
+						if (iLang == 1)
+							locationStr = "Долина Рудников";
+						else if (iLang == 2)
+							locationStr = "Kolonia Karna і№њжїу";
+						else
+							locationStr = "Penal Colony";
+
+					}
+					else if (wName.HasWord("OLDMINE.ZEN"))
+					{
+						imageStr = "oldmine";
+						hasTimeVersions = FALSE;
+
+						if (iLang == 1)
+							locationStr = "Старая шахта";
+						else if (iLang == 2)
+							locationStr = "Stara Kopalnia";
+						else
+							locationStr = "Old Mine";
+
+					}
+					else if (wName.HasWord("FREEMINE.ZEN"))
+					{
+						imageStr = "freemine";
+						hasTimeVersions = FALSE;
+
+						if (iLang == 1)
+							locationStr = "Новая шахта";
+						else if (iLang == 2)
+							locationStr = "Wolna Kopalnia";
+						else
+							locationStr = "Free Mine";
+
+					}
+					else if (wName.HasWord("ORCGRAVEYARD.ZEN"))
+					{
+						imageStr = "graveyard";
+						hasTimeVersions = FALSE;
+
+						if (iLang == 1)
+							locationStr = "Кладбище орков";
+						else if (iLang == 2)
+							locationStr = "Cmentarzysko Orkуw";
+						else
+							locationStr = "Orc Cemetery";
+
+					}
+					else if (wName.HasWord("ORCTEMPEL.ZEN"))
+					{
+						imageStr = "orctempel";
+						hasTimeVersions = FALSE;
+
+						if (iLang == 1)
+							locationStr = "Храм Спящего";
+						else if (iLang == 2)
+							locationStr = "Њwi№tynia Њni№cego";
+						else
+							locationStr = "Sleeper Temple";
+
+					}
+#endif
+
+#if defined __G2 || defined __G2A
+				if (engineVersion == Engine_G2 || engineVersion == Engine_G2A)
+					if (wName.HasWord("NEWWORLD.ZEN"))
+					{
+						imageStr = "khorinis";
+						hasTimeVersions = TRUE;
+
+						if (iLang == 1)
+							locationStr = "Хоринис";
+						else if (iLang == 2)
+							locationStr = "Khorinis";
+						else
+							locationStr = "Khorinis";
+
+					}
+					else if (wName.HasWord("ADDONWORLD.ZEN"))
+					{
+						imageStr = "jharkendar";
+						hasTimeVersions = TRUE;
+
+						if (iLang == 1)
+							locationStr = "Яркендар";
+						else if (iLang == 2)
+							locationStr = "Jarkendar";
+						else
+							locationStr = "Jharkendar";
+
+					}
+					else if (wName.HasWord("OLDWORLD.ZEN"))
+					{
+						imageStr = "valley";
+						hasTimeVersions = TRUE;
+
+						if (iLang == 1)
+							locationStr = "Долина Рудников";
+						else if (iLang == 2)
+							locationStr = "Gуrnicza Dolina";
+						else
+							locationStr = "Valley of Mines";
+
+					}
+					else if (wName.HasWord("DRAGONISLAND.ZEN"))
+					{
+						imageStr = "irdorath";
+						hasTimeVersions = FALSE;
+
+						if (iLang == 1)
+							locationStr = "Ирдорат";
+						else if (iLang == 2)
+							locationStr = "Irdorath";
+						else
+							locationStr = "Irdorath";
+
+					}
+#endif
+				if (imageStr == "" || locationStr == "") {
+					imageStr = "unknown";
+					hasTimeVersions = FALSE;
+
 					if (iLang == 1)
-						sprintf(locationName, "Хоринис");
+						locationStr = "Исследование";
 					else if (iLang == 2)
-						sprintf(locationName, "Khorinis");
+						locationStr = "Nieznana Kraina";
 					else
-						sprintf(locationName, "Khorinis");
-
-					ConvertString(locationName, locationName);
-					discordPresence.largeImageText = locationName;
-					
-					if ( hour >= 8 && hour < 18 )
-						discordPresence.largeImageKey = "khorinis_day";
-					else if (hour >= 18 && hour < 22 )
-						discordPresence.largeImageKey = "khorinis_evening";
-					else if ( hour >= 4 && hour < 8 )
-						discordPresence.largeImageKey = "khorinis_morning";
-					else
-						discordPresence.largeImageKey = "khorinis_night";
-				}
-				else if ( wName.Search( "ADDONWORLD.ZEN", 1U ) != -1 )
-				{
-					char locationName[128];
-					if (iLang == 1)
-						sprintf(locationName, "Яркендар");
-					else if (iLang == 2)
-						sprintf(locationName, "Jarkendar");
-					else
-						sprintf(locationName, "Jharkendar");
-
-					ConvertString(locationName, locationName);
-					discordPresence.largeImageText = locationName;
-
-					if ( hour >= 8 && hour < 18 )
-						discordPresence.largeImageKey = "jharkendar_day";
-					else if ( hour >= 18 && hour < 22 )
-						discordPresence.largeImageKey = "jharkendar_evening";
-					else if ( hour >= 4 && hour < 8 )
-						discordPresence.largeImageKey = "jharkendar_morning";
-					else
-						discordPresence.largeImageKey = "jharkendar_night";
-				}
-				else if ( wName.Search( "OLDWORLD.ZEN", 1U ) != -1 )
-				{
-					char locationName[128];
-					if (iLang == 1)
-						sprintf(locationName, "Долина Рудников");
-					else if (iLang == 2)
-						sprintf(locationName, "Gуrnicza Dolina");
-					else
-						sprintf(locationName, "Valley of Mines");
-
-					ConvertString(locationName, locationName);
-					discordPresence.largeImageText = locationName;
-
-					if ( hour >= 8 && hour < 18 )
-						discordPresence.largeImageKey = "valley_day";
-					else if ( hour >= 18 && hour < 22 )
-						discordPresence.largeImageKey = "valley_evening";
-					else if ( hour >= 4 && hour < 8 )
-						discordPresence.largeImageKey = "valley_morning";
-					else
-						discordPresence.largeImageKey = "valley_night";
-				}
-				else if ( wName.Search( "DRAGONISLAND.ZEN", 1U ) != -1 )
-				{
-					char locationName[128];
-					if (iLang == 1)
-						sprintf(locationName, "Ирдорат");
-					else if (iLang == 2)
-						sprintf(locationName, "Irdorath");
-					else
-						sprintf(locationName, "Irdorath");
-
-					ConvertString(locationName, locationName);
-					discordPresence.largeImageText = locationName;
-
-					discordPresence.largeImageKey = "irdorath";
-				}
-				else
-				{
-					char locationName[128];
-					if (iLang == 1)
-						sprintf(locationName, "Исследование");
-					else if (iLang == 2)
-						sprintf(locationName, "Nieznana Kraina");
-					else
-						sprintf(locationName, "Unknown Lands");
-
-					ConvertString(locationName, locationName);
-					discordPresence.largeImageText = locationName;
-
-					discordPresence.largeImageKey = "menu"; // Could be changed to some terrain image
+						locationStr = "Unknown Lands";
 				}
 
+				if (hasTimeVersions) {
+					if (hour >= 4 && hour < 8)
+						imageStr += "_morning";
+					else if (hour >= 8 && hour < 18)
+						imageStr += "_day";
+					else if (hour >= 18 && hour < 22)
+						imageStr += "_evening";
+					else
+						imageStr += "_night";
+				}
+
+				sprintf(imageKey, imageStr);
+				ConvertString(imageKey, imageKey);
+				discordPresence.largeImageKey = imageKey;
+
+				sprintf(locationName, locationStr);
+				ConvertString(locationName, locationName);
+				discordPresence.largeImageText = locationName;
+
+				// Ingame day and time small image display
 				discordPresence.smallImageKey = "info";
 				discordPresence.smallImageText = timeBuffer;
 			}
@@ -198,14 +274,15 @@ namespace GOTHIC_ENGINE {
 			ConvertString(gameState, gameState);
 			discordPresence.state = gameState;
 
-			discordPresence.largeImageKey = "menu";
+			// "menu" image will change automatically when discord app id changes on Initialize
+			discordPresence.largeImageKey = "menu"; 
 			discordPresence.smallImageKey = "";
 			discordPresence.smallImageText = "";
 		}
 
 		if (zgameoptions)
 		{
-			string gameTitle = A zgameoptions->ReadString("Info", "Title", "Gothic II");
+			string gameTitle = A zgameoptions->ReadString("Info", "Title", "Unknown Title");
 			discordPresence.details = gameTitle;
 		}
 		else
