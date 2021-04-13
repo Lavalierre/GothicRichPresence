@@ -111,7 +111,7 @@ namespace GOTHIC_ENGINE {
 						if (iLang == 1)
 							locationStr = "Долина Рудников";
 						else if (iLang == 2)
-							locationStr = "Kolonia Karna і№њжїу";
+							locationStr = "Kolonia Karna";
 						else
 							locationStr = "Penal Colony";
 
