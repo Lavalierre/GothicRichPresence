@@ -14,8 +14,8 @@ using namespace Gdiplus;
 
 
 // Discord RPC headers
-#include <discord_register.h>
-#include <discord_rpc.h>
+#include "Discord/include/discord_register.h"
+#include "Discord/include/discord_rpc.h"
 
 
 // Include headers

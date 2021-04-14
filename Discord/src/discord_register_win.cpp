@@ -1,5 +1,5 @@
-#include "discord_rpc.h"
-#include "discord_register.h"
+#include "Discord/include/discord_rpc.h"
+#include "Discord/include/discord_register.h"
 
 #define WIN32_LEAN_AND_MEAN
 #define NOMCX
@@ -7,6 +7,7 @@
 #define NOIME
 #include <windows.h>
 #include <psapi.h>
+#include <cwchar>
 #include <cstdio>
 
 /**
@@ -19,7 +20,6 @@
  * The entire function is rewritten
  */
 #ifdef __MINGW32__
-#include <wchar.h>
 /// strsafe.h fixes
 static HRESULT StringCbPrintfW(LPWSTR pszDest, size_t cbDest, LPCWSTR pszFormat, ...)
 {
@@ -34,7 +34,6 @@ static HRESULT StringCbPrintfW(LPWSTR pszDest, size_t cbDest, LPCWSTR pszFormat,
     return ret;
 }
 #else
-#include <cwchar>
 #include <strsafe.h>
 #endif // __MINGW32__
 

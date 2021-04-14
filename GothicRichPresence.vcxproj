@@ -485,9 +485,13 @@
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Discord\include\discord_register.h" />
+    <ClInclude Include="Discord\include\discord_rpc.h" />
     <ClInclude Include="Discord\src\backoff.h" />
     <ClInclude Include="Discord\src\connection.h" />
+    <ClInclude Include="Discord\src\msg_queue.h" />
     <ClInclude Include="Discord\src\rpc_connection.h" />
+    <ClInclude Include="Discord\src\serialization.h" />
     <ClInclude Include="Plugin.cpp" />
     <ClCompile Include="Interface.cpp" />
     <ClCompile Include="ZenGin\Gothic_II_Addon\ClassDeclarators_G2A.cpp" />
