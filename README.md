@@ -14,7 +14,7 @@ This is [Discord Rich Presence](https://discord.com/rich-presence) made for the 
 You can easily implement this plugin into your mod. Just download `GothicRichPresence.dll` from the [latest release](https://github.com/Lavalierre/GothicRichPresence/releases) and place it in your `.mod/.vdf` file in `System/autorun` folder.
 Now you're ready for setting it up.
 
-## Config file
+### Config file
 
 Config file section is completely optional, but you can change it by your own. Just write this section in your mod config file in any place.
 
