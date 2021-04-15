@@ -19,6 +19,13 @@ extern "C" {
 }
 
 #include "Discord/include/discord_rpc.h"
+#include "nlohmann/json.hpp"
+#include <map>
+#include <vector>
+#include <initializer_list>
+#include <sstream>
+#include <algorithm>
+#include <codecvt>
 
 #pragma comment (lib, "Psapi.lib")
 #pragma comment (lib, "Shw32.lib")

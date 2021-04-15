@@ -15,9 +15,6 @@ namespace GOTHIC_ENGINE {
         {
             GDiscordRPC::Instance().Update();
         }
-
-        if ( zinput->KeyPressed( KEY_LSHIFT ) && zinput->KeyToggled( KEY_L ) )
-            GDiscordRPC::Instance().SwitchLanguage();
     }
 
     void Game_Entry() {

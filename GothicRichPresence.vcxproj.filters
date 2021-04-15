@@ -2828,6 +2828,12 @@
     <ClInclude Include="Discord\include\discord_rpc.h">
       <Filter>Plugin\Workspace\Discord</Filter>
     </ClInclude>
+    <ClInclude Include="Utility.cpp">
+      <Filter>Plugin\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="Const.h">
+      <Filter>Plugin\Workspace</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".build_settings.inl">
