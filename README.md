@@ -14,7 +14,7 @@ This is [Discord Rich Presence](https://discord.com/rich-presence) made for the 
 You can easily implement this plugin into your mod. Just download `GothicRichPresence.dll` from the [latest release](https://github.com/Lavalierre/GothicRichPresence/releases) and place it in your `.mod/.vdf` file in `System/autorun` folder.
 Now you're ready for setting it up.
 
-### Config file
+## Config file
 
 Config file section is completely optional, but you can change it by your own. Just write this section in your mod config file in any place.
 
@@ -24,7 +24,7 @@ Config file section is completely optional, but you can change it by your own. J
 2. `AppKey` option is used to set up your own Discord application (for more info check the "Discord App" section)
 3. `RPCConfigFile` option is uset to set up your own RPC config file, whice contains custom location names and images (for more info check the "RPC Config" section)
 
-### Discord App
+## Discord App
 
 You can create your own Discord application with your custom location images. How to:
 
@@ -37,7 +37,7 @@ Now your application ready to go and will be used by plugin on the next launch. 
 - Image with name `menu` will be displayed when player currently is in menu, or in the unknown location
 - Image with name `info` will be displayed at the bottom-right corner of your location pic, and it contains information about game time
 
-### RPC Config
+## RPC Config
 
 RPC Config is a custom json file, which you can place in the `<GothicFolder>\System\` folder, or right into your .vdf/.mod file in the `System\` folder. Example of the config file you can see below:
 
