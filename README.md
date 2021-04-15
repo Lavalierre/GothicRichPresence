@@ -22,7 +22,7 @@ Config file section is completely optional, but you can change it by your own. J
 
 1. `Lang` option is used to set language of the plugin. Currently supported values: EN, RU, PL
 2. `AppKey` option is used to set up your own Discord application (for more info check the "Discord App" section)
-3. `RPCConfigFile` option is uset to set up your own RPC config file, whice contains custom location names and images (for more info check the "RPC Config" section)
+3. `RPCConfigFile` option is uset to set up your own RPC config file, which contains custom location names and images (for more info check the "RPC Config" section)
 
 ### Discord App
 
