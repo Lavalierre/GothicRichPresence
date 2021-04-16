@@ -199,7 +199,7 @@ namespace GOTHIC_ENGINE {
 		{
 			if ( ogame->GetGameWorld() )
 			{
-				zSTRING wName		= ogame->GetGameWorld()->GetWorldFilename();
+				zSTRING wName		= ogame->GetGameWorld()->GetWorldName();
 				zSTRING guildName	= player->GetGuildName();
 				int level			= player->level;
 				int kapitel			= 0;
@@ -255,7 +255,8 @@ namespace GOTHIC_ENGINE {
 
 				for ( WorldInfo world : vWorlds )
 				{
-					if ( wName.HasWord( world.zenName.c_str() ) )
+					// Must be exact the same names to avoid mistaking for example world.zen with newworld.zen
+					if ( wName.Compare( world.zenName.c_str() ) )
 					{
 						sprintf( imageKey, world.sImage.c_str() );
 						sprintf( locationName, world.vAliases[ iLang ].c_str() );
