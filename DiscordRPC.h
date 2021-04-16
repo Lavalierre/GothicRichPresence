@@ -3,6 +3,14 @@
 
 namespace GOTHIC_ENGINE {
 	
+
+	struct WorldInfo
+	{
+		std::string zenName;
+		std::string sImage;
+		std::vector<std::string> vAliases;
+	};
+
 	class GDiscordRPC
 	{
 	public:
@@ -15,16 +23,21 @@ namespace GOTHIC_ENGINE {
 		void Update();
 
 		void DetectLanguage();
-		void SwitchLanguage();
 
-		void ConvertString( char *, char * );
+		void RegisterWorld( std::string, std::string, std::initializer_list<std::string> );
+		void RegisterWorld( std::string, std::string, std::vector<std::string> );
+		void ParseConfig();
+		void ParseRPCFile();
 
 	private:
 
 		GDiscordRPC() = default;
 		static GDiscordRPC oInstance;
 		time_t tStartTimestamp{ 0 };
-		int iLang{ 0 }; // 0 - English, 1 - Russian, 2 - Polish
+		string sAppPublicKey;										// application public key
+		string sRPCFile;											// file name of rpc config
+		LangTags iLang{ LangTags::NONE };
+		std::vector< WorldInfo > vWorlds;
 	};
 
 }
