@@ -73,3 +73,4 @@ Now you need to create a custom json file, which you can place in the `<GothicFo
 - Each location object must have 2 strings: `aliases` and `image`.
   - The `aliases` are your location names. Just write them with "," separator. Tags `{ru}` `{en}` `{pl}` represents which language it is.
   - And `image` is cover image of your location. Copy image name from your Discord application and paste it there.
+
