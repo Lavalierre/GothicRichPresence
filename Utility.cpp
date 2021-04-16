@@ -104,27 +104,6 @@ namespace GOTHIC_ENGINE {
 		}
 	}
 
-  void ConvertString1250( char *inStr, char *outputStr)
-	{
-		if ( is_utf8( inStr ) )
-		{
-			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wconv;
-			std::wstring wstr = wconv.from_bytes( inStr );
-			
-			std::vector<char> buf( wstr.size() );
-			std::use_facet<std::ctype<wchar_t>>( std::locale( std::locale(".1250") ) ).narrow( wstr.data(), wstr.data() + wstr.size(), '?', buf.data() );
-
-			memset( outputStr, 0, sizeof outputStr );
-			strcat( outputStr, std::string( buf.data(), buf.size() ).c_str() );
-		}
-		else
-		{
-			std::string u8string = cp1250_to_utf8( inStr );
-			memset( outputStr, 0, sizeof outputStr );
-			strcat( outputStr, u8string.c_str() );
-		}
-	}
-
 	static inline void ltrim( std::string &s ) {
 		s.erase( s.begin(), std::find_if( s.begin(), s.end(), []( unsigned char ch ) {
 			return !std::isspace( ch );

@@ -226,13 +226,12 @@ namespace GOTHIC_ENGINE {
 					break;
 				case RU:
 					sprintf( timeBuffer, "День %d - %02d:%02d", day, hour, min );
-          ConvertString( timeBuffer, timeBuffer );
 					break;
 				case PL:
 					sprintf( timeBuffer, "Dzieс %d - %02d:%02d", day, hour, min );
-          ConvertString1250( timeBuffer, timeBuffer );
 					break;
 				}
+				ConvertString( timeBuffer, timeBuffer );
 
 				// *** CHARACTER INFO *** //
 
@@ -243,13 +242,12 @@ namespace GOTHIC_ENGINE {
 					break;
 				case RU:
 					sprintf( infoBuffer, "%s - %d ур.", guildName.ToChar(), level );
-          ConvertString( infoBuffer, infoBuffer );
 					break;
 				case PL:
 					sprintf( infoBuffer, "%s - %d Poziom", guildName.ToChar(), level );
-          ConvertString1250( infoBuffer, infoBuffer );
 					break;
 				}
+				ConvertString( infoBuffer, infoBuffer );
 
 				// *** LOCATION & CHAPTER INFO *** //
 
@@ -263,10 +261,7 @@ namespace GOTHIC_ENGINE {
 
 						// In case if it's default worlds
 						if ( !is_utf8( locationName ) ) {
-              if ( iLang == PL ) 
-                ConvertString1250( locationName, locationName );
-              else 
-                ConvertString( locationName, locationName );
+							ConvertString( locationName, locationName );
             }  
 					}
 				}
@@ -281,13 +276,12 @@ namespace GOTHIC_ENGINE {
 						break;
 					case RU:
 						sprintf( locationName, "Неизвестные Земли" );
-            ConvertString( locationName, locationName );
 						break;
 					case PL:
 						sprintf( locationName, "Nieznana Kraina" );
-            ConvertString1250( locationName, locationName );
 						break;
 					}
+					ConvertString( locationName, locationName );
 				}
 
 				switch ( iLang )
@@ -297,13 +291,12 @@ namespace GOTHIC_ENGINE {
 					break;
 				case RU:
 					sprintf( chapterInfo, " - Глава %d", kapitel );
-          ConvertString( chapterInfo, chapterInfo );
 					break;
 				case PL:
 					sprintf( chapterInfo, " - Rozdziaі %d", kapitel );
-          ConvertString1250( chapterInfo, chapterInfo );
 					break;
 				}
+				ConvertString( chapterInfo, chapterInfo );
 
 				strcat( locationName, chapterInfo );
 
@@ -326,13 +319,12 @@ namespace GOTHIC_ENGINE {
 				break;
 			case RU:
 				sprintf( gameState, "Меню" );
-				ConvertString( gameState, gameState );
 				break;
 			case PL:
 				sprintf( gameState, "Menu" );
-				ConvertString1250( gameState, gameState );
 				break;
 			}
+			ConvertString( gameState, gameState );
 
 			discordPresence.state = gameState;
 			discordPresence.largeImageKey = "menu";
