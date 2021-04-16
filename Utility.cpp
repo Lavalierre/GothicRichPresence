@@ -49,6 +49,32 @@ namespace GOTHIC_ENGINE {
 		return res;
 	}
 
+  std::string cp1250_to_utf8( const char *str ) {
+		std::string res;
+		int result_u, result_c;
+		result_u = MultiByteToWideChar( 1250, 0, str, -1, 0, 0 );
+		if ( !result_u ) { return 0; }
+		wchar_t *ures = new wchar_t[ result_u ];
+		if ( !MultiByteToWideChar( 1250, 0, str, -1, ures, result_u ) ) {
+			delete[] ures;
+			return 0;
+		}
+		result_c = WideCharToMultiByte( 65001, 0, ures, -1, 0, 0, 0, 0 );
+		if ( !result_c ) {
+			delete[] ures;
+			return 0;
+		}
+		char *cres = new char[ result_c ];
+		if ( !WideCharToMultiByte( 65001, 0, ures, -1, cres, result_c, 0, 0 ) ) {
+			delete[] cres;
+			return 0;
+		}
+		delete[] ures;
+		res.append( cres );
+		delete[] cres;
+		return res;
+	}
+
 	/*
 		ConvertString is needed for UTF-8/ANSI coversion
 		Union is using ANSI encoding by default, so any text that typed directly in the CPP files will be messed up in the RPC
@@ -73,6 +99,27 @@ namespace GOTHIC_ENGINE {
 		else
 		{
 			std::string u8string = cp1251_to_utf8( inStr );
+			memset( outputStr, 0, sizeof outputStr );
+			strcat( outputStr, u8string.c_str() );
+		}
+	}
+
+  void ConvertString1250( char *inStr, char *outputStr)
+	{
+		if ( is_utf8( inStr ) )
+		{
+			std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> wconv;
+			std::wstring wstr = wconv.from_bytes( inStr );
+			
+			std::vector<char> buf( wstr.size() );
+			std::use_facet<std::ctype<wchar_t>>( std::locale( std::locale(".1250") ) ).narrow( wstr.data(), wstr.data() + wstr.size(), '?', buf.data() );
+
+			memset( outputStr, 0, sizeof outputStr );
+			strcat( outputStr, std::string( buf.data(), buf.size() ).c_str() );
+		}
+		else
+		{
+			std::string u8string = cp1250_to_utf8( inStr );
 			memset( outputStr, 0, sizeof outputStr );
 			strcat( outputStr, u8string.c_str() );
 		}

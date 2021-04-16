@@ -110,9 +110,9 @@ namespace GOTHIC_ENGINE {
 
 		string appKey, rpcFileName, language;
 
-		gameOptions.Read( language, "Gothic RPC", "Lang" );
-		gameOptions.Read( appKey, "Gothic RPC", "AppKey" );
-		gameOptions.Read( rpcFileName, "Gothic RPC", "RPCConfigFile" );
+		gameOptions.Read( language, "GothicRichPresence", "Lang" );
+		gameOptions.Read( appKey, "GothicRichPresence", "AppKey" );
+		gameOptions.Read( rpcFileName, "GothicRichPresence", "ConfigFile" );
 
 		!appKey.IsEmpty() ? sAppPublicKey = appKey : false;
 		!rpcFileName.IsEmpty() ? sRPCFile = rpcFileName : false;
@@ -136,7 +136,7 @@ namespace GOTHIC_ENGINE {
 
 	void GDiscordRPC::ParseRPCFile()
 	{
-
+  
 		// Reading file
 		zoptions->ChangeDir( DIR_SYSTEM );
 		zFILE_VDFS *originFile = zNEW( zFILE_VDFS )( sRPCFile );
@@ -161,7 +161,6 @@ namespace GOTHIC_ENGINE {
 
 		std::string worldList;
 		if ( !jsonFile[ "worldList" ].is_string() ) return;
-
 		worldList = jsonFile[ "worldList" ].get<std::string>();
 		std::vector<std::string> zenNames = ExplodeString( worldList, ',', true );
 
@@ -223,17 +222,17 @@ namespace GOTHIC_ENGINE {
 				switch ( iLang )
 				{
 				case EN:
-					sprintf( timeBuffer, "Dzieñ %d - %02d:%02d", day, hour, min );
+					sprintf( timeBuffer, "Day %d - %02d:%02d", day, hour, min );
 					break;
 				case RU:
 					sprintf( timeBuffer, "Äåíü %d - %02d:%02d", day, hour, min );
+          ConvertString( timeBuffer, timeBuffer );
 					break;
 				case PL:
-					sprintf( timeBuffer, "Day %d - %02d:%02d", day, hour, min );
+					sprintf( timeBuffer, "Dzieñ %d - %02d:%02d", day, hour, min );
+          ConvertString1250( timeBuffer, timeBuffer );
 					break;
 				}
-
-				ConvertString( timeBuffer, timeBuffer );
 
 				// *** CHARACTER INFO *** //
 
@@ -244,13 +243,13 @@ namespace GOTHIC_ENGINE {
 					break;
 				case RU:
 					sprintf( infoBuffer, "%s - %d óð.", guildName.ToChar(), level );
+          ConvertString( infoBuffer, infoBuffer );
 					break;
 				case PL:
 					sprintf( infoBuffer, "%s - %d Poziom", guildName.ToChar(), level );
+          ConvertString1250( infoBuffer, infoBuffer );
 					break;
 				}
-				
-				ConvertString( infoBuffer, infoBuffer );
 
 				// *** LOCATION & CHAPTER INFO *** //
 
@@ -262,8 +261,12 @@ namespace GOTHIC_ENGINE {
 						sprintf( locationName, world.vAliases[ iLang ].c_str() );
 
 						// In case if it's default worlds
-						if ( !is_utf8( locationName ) )
-							ConvertString( locationName, locationName );
+						if ( !is_utf8( locationName ) ) {
+              if ( iLang == PL ) 
+                ConvertString1250( locationName, locationName );
+              else 
+                ConvertString( locationName, locationName );
+            }  
 					}
 				}
 				if ( locationName == NULL ) {
@@ -277,29 +280,30 @@ namespace GOTHIC_ENGINE {
 						break;
 					case RU:
 						sprintf( locationName, "Íåèçâåñòíûå Çåìëè" );
+            ConvertString( locationName, locationName );
 						break;
 					case PL:
 						sprintf( locationName, "Nieznana Kraina" );
+            ConvertString1250( locationName, locationName );
 						break;
 					}
-
-					ConvertString( locationName, locationName );
 				}
 
 				switch ( iLang )
 				{
 				case EN:
-					sprintf( chapterInfo, "- %d Chapter", kapitel );
+					sprintf( chapterInfo, " - Chapter %d", kapitel );
 					break;
 				case RU:
-					sprintf( chapterInfo, "- %d Ãëàâà", kapitel );
+					sprintf( chapterInfo, " - Ãëàâà %d", kapitel );
+          ConvertString( chapterInfo, chapterInfo );
 					break;
 				case PL:
-					sprintf( chapterInfo, "- %d Rozdzia³", kapitel );
+					sprintf( chapterInfo, " - Rozdzia³ %d", kapitel );
+          ConvertString1250( chapterInfo, chapterInfo );
 					break;
 				}
 
-				ConvertString( chapterInfo, chapterInfo );
 				strcat( locationName, chapterInfo );
 
 				// *** SUMMARISING INFO *** //
@@ -314,16 +318,21 @@ namespace GOTHIC_ENGINE {
 		else
 		{
 			char gameState[ 128 ];
-			if ( iLang == 1 )
+			switch ( iLang )
+			{
+			case EN:
+				sprintf( gameState, "Menu" );
+				break;
+			case RU:
 				sprintf( gameState, "Ìåíþ" );
-			else if ( iLang == 2 )
+				ConvertString( gameState, gameState );
+				break;
+			case PL:
 				sprintf( gameState, "Menu" );
-			else
-				sprintf( gameState, "Menu" );
+				ConvertString1250( gameState, gameState );
+				break;
+			}
 
-			ConvertString( gameState, gameState );
-
-			// "menu" image will change automatically when discord app id changes on Initialize
 			discordPresence.state = gameState;
 			discordPresence.largeImageKey = "menu";
 			discordPresence.smallImageKey = "";
