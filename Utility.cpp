@@ -83,7 +83,7 @@ namespace GOTHIC_ENGINE {
 		If you not sure if it's UTF-8 text or not, just use is_utf8 function
 	*/
 
-	void ConvertString( char *inStr, char *outputStr)
+	void ConvertString( char *inStr, char *outputStr, std::locale loc = std::locale(".1251"))
 	{
 		if ( is_utf8( inStr ) )
 		{
@@ -91,14 +91,20 @@ namespace GOTHIC_ENGINE {
 			std::wstring wstr = wconv.from_bytes( inStr );
 			
 			std::vector<char> buf( wstr.size() );
-			std::use_facet<std::ctype<wchar_t>>( std::locale( std::locale(".1251") ) ).narrow( wstr.data(), wstr.data() + wstr.size(), '?', buf.data() );
+			std::use_facet<std::ctype<wchar_t>>( std::locale( loc ) ).narrow( wstr.data(), wstr.data() + wstr.size(), '?', buf.data() );
 
 			memset( outputStr, 0, sizeof outputStr );
 			strcat( outputStr, std::string( buf.data(), buf.size() ).c_str() );
 		}
 		else
 		{
-			std::string u8string = cp1251_to_utf8( inStr );
+			std::string u8string;
+
+			if (loc == std::locale(".1250") )
+				u8string = cp1250_to_utf8( inStr );
+			else
+				u8string = cp1251_to_utf8( inStr );
+
 			memset( outputStr, 0, sizeof outputStr );
 			strcat( outputStr, u8string.c_str() );
 		}

@@ -66,6 +66,7 @@ namespace GOTHIC_ENGINE {
 			iLang = LangTags::PL;
 		else
 			iLang = LangTags::EN;
+
 	}
 
 	void GDiscordRPC::RegisterWorld( std::string zen, std::string image, std::initializer_list<std::string> names )
@@ -229,9 +230,12 @@ namespace GOTHIC_ENGINE {
 					break;
 				case PL:
 					sprintf( timeBuffer, "Dzieñ %d - %02d:%02d", day, hour, min );
+					ConvertString( timeBuffer, timeBuffer, std::locale( ".1250" ) );
 					break;
 				}
-				ConvertString( timeBuffer, timeBuffer );
+
+				if ( !is_utf8( timeBuffer ) )
+					ConvertString( timeBuffer, timeBuffer );
 
 				// *** CHARACTER INFO *** //
 
@@ -245,9 +249,12 @@ namespace GOTHIC_ENGINE {
 					break;
 				case PL:
 					sprintf( infoBuffer, "%s - %d Poziom", guildName.ToChar(), level );
+					ConvertString( infoBuffer, infoBuffer, std::locale( ".1250" ) );
 					break;
 				}
-				ConvertString( infoBuffer, infoBuffer );
+
+				if ( !is_utf8(infoBuffer) )
+					ConvertString( infoBuffer, infoBuffer );
 
 				// *** LOCATION & CHAPTER INFO *** //
 
@@ -261,8 +268,11 @@ namespace GOTHIC_ENGINE {
 
 						// In case if it's default worlds
 						if ( !is_utf8( locationName ) ) {
-							ConvertString( locationName, locationName );
-            }  
+							if ( iLang == LangTags::PL )
+								ConvertString( locationName, locationName, std::locale( ".1250" ) );
+							else
+								ConvertString( locationName, locationName );
+						}  
 					}
 				}
 				if ( locationName == NULL ) {
@@ -279,9 +289,11 @@ namespace GOTHIC_ENGINE {
 						break;
 					case PL:
 						sprintf( locationName, "Nieznana Kraina" );
+						ConvertString( locationName, locationName, std::locale( ".1250" ) );
 						break;
 					}
-					ConvertString( locationName, locationName );
+					if ( !is_utf8( locationName ) )
+						ConvertString( locationName, locationName );
 				}
 
 				switch ( iLang )
@@ -294,9 +306,12 @@ namespace GOTHIC_ENGINE {
 					break;
 				case PL:
 					sprintf( chapterInfo, " - Rozdzia³ %d", kapitel );
+					ConvertString( chapterInfo, chapterInfo, std::locale( ".1250" ) );
 					break;
 				}
-				ConvertString( chapterInfo, chapterInfo );
+
+				if ( !is_utf8( chapterInfo ) )
+					ConvertString( chapterInfo, chapterInfo );
 
 				strcat( locationName, chapterInfo );
 
@@ -322,9 +337,12 @@ namespace GOTHIC_ENGINE {
 				break;
 			case PL:
 				sprintf( gameState, "Menu" );
+				ConvertString( gameState, gameState, std::locale( ".1250" ) );
 				break;
 			}
-			ConvertString( gameState, gameState );
+
+			if ( !is_utf8( gameState ) )
+				ConvertString( gameState, gameState );
 
 			discordPresence.state = gameState;
 			discordPresence.largeImageKey = "menu";
