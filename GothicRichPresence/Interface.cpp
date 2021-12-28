@@ -1,9 +1,17 @@
 // Interface queue
+// #define DONT_USE_UNION_NAMES_AS_DEFAULT
 #include "UnionAfx.h"
 #include <gdiplus.h>
 #pragma comment (lib,"Gdiplus.lib")
 using namespace Gdiplus;
 
+
+// Static RTTI DynamicCast pointer
+#if _DLL != 1
+extern void* __cdecl __RTDynamicCast( void*, long, void*, void*, int );
+extern "C" __declspec(dllexport)
+uint RTDynamicCast_MT = (uint)__RTDynamicCast;
+#endif
 
 // Check executed engine with current source code
 #define CHECK_THIS_ENGINE (Union.GetEngineVersion() == ENGINE)
@@ -16,7 +24,12 @@ using namespace Gdiplus;
 // Discord RPC headers
 #include "Discord/include/discord_register.h"
 #include "Discord/include/discord_rpc.h"
-
+#include <map>
+#include <vector>
+#include <initializer_list>
+#include <sstream>
+#include <algorithm>
+#include <codecvt>
 
 // Include headers
 #ifdef __G1
@@ -39,7 +52,6 @@ using namespace Gdiplus;
 #define ENGINE Engine_G2A
 #include "Headers.h"
 #endif
-
 
 
 // Include source files (with same as header parameters)

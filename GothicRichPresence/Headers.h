@@ -3,6 +3,7 @@
 
 // Automatically generated block
 #pragma region Includes
+#include "nlohmann/json.hpp"
 #include "Const.h"
 #include "DiscordRPC.h"
 #include "Plugin.h"

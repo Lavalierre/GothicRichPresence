@@ -223,6 +223,9 @@
     <Filter Include="Plugin\Workspace\Discord\Source">
       <UniqueIdentifier>{70c69a53-0129-43a7-b29d-04b1d25576c1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Plugin\Workspace\DiscordRPC">
+      <UniqueIdentifier>{4996c68a-aa74-4da4-8b36-90b96397542a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Interface.cpp">
@@ -2801,12 +2804,6 @@
     <ClInclude Include="Plugin.cpp">
       <Filter>Plugin\Workspace\Plugin</Filter>
     </ClInclude>
-    <ClInclude Include="DiscordRPC.h">
-      <Filter>Plugin\Workspace</Filter>
-    </ClInclude>
-    <ClInclude Include="DiscordRPC.cpp">
-      <Filter>Plugin\Workspace</Filter>
-    </ClInclude>
     <ClInclude Include="Discord\src\msg_queue.h">
       <Filter>Plugin\Workspace\Discord\Headers</Filter>
     </ClInclude>
@@ -2828,11 +2825,17 @@
     <ClInclude Include="Discord\include\discord_rpc.h">
       <Filter>Plugin\Workspace\Discord</Filter>
     </ClInclude>
+    <ClInclude Include="DiscordRPC.cpp">
+      <Filter>Plugin\Workspace\DiscordRPC</Filter>
+    </ClInclude>
+    <ClInclude Include="DiscordRPC.h">
+      <Filter>Plugin\Workspace\DiscordRPC</Filter>
+    </ClInclude>
     <ClInclude Include="Utility.cpp">
-      <Filter>Plugin\Workspace</Filter>
+      <Filter>Plugin\Workspace\DiscordRPC</Filter>
     </ClInclude>
     <ClInclude Include="Const.h">
-      <Filter>Plugin\Workspace</Filter>
+      <Filter>Plugin\Workspace\DiscordRPC</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

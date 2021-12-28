@@ -37,18 +37,18 @@ namespace GOTHIC_ENGINE {
 		if ( vWorlds.size() == 0 )
 		{
 #if defined __G1 || defined __G1A
-			RegisterWorld( "WORLD", "colony_day", { "Penal Colony", "Колония", "Kolonia Karna", } );
-			RegisterWorld( "OLDMINE", "oldmine", { "Old Mine", "Старая Шахта", "Stara Kopalnia" } );
-			RegisterWorld( "FREEMINE", "freemine", { "Free Mine", "Свободная Шахта", "Wolna Kopalnia" } );
-			RegisterWorld( "ORCGRAVEYARD", "graveyard", { "Orc Graveyard", "Кладбище Орков", "Cmentarzysko Orkуw" } );
-			RegisterWorld( "ORCTEMPEL", "orctempel", { "Sleeper Temple", "Храм Спящего", "Њwi№tynia Њni№cego" } );
+			RegisterWorld( "WORLD", "colony_day", { "Penal Colony", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "Kolonia Karna", } );
+			RegisterWorld( "OLDMINE", "oldmine", { "Old Mine", "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", "Stara Kopalnia" } );
+			RegisterWorld( "FREEMINE", "freemine", { "Free Mine", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", "Wolna Kopalnia" } );
+			RegisterWorld( "ORCGRAVEYARD", "graveyard", { "Orc Graveyard", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ", "Cmentarzysko OrkпїЅw" } );
+			RegisterWorld( "ORCTEMPEL", "orctempel", { "Sleeper Temple", "пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "пїЅwiпїЅtynia пїЅniпїЅcego" } );
 #endif
 
 #if defined __G2 || defined __G2A
-			RegisterWorld( "NEWWORLD", "khorinis", { "Khorinis", "Хоринис", "Khorinis" } );
-			RegisterWorld( "OLDWORLD", "valley", { "Valley of Mines", "Долина Рудников", "Gуrnicza Dolina" } );
-			RegisterWorld( "ADDONWORLD", "jharkendar", { "Jharkendar", "Яркендар", "Jarkendar" } );
-			RegisterWorld( "DRAGONISLAND", "irdorath", { "Irdorath", "Ирдорат", "Irdorath" } );
+			RegisterWorld( "NEWWORLD", "khorinis", { "Khorinis", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "Khorinis" } );
+			RegisterWorld( "OLDWORLD", "valley", { "Valley of Mines", "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "GпїЅrnicza Dolina" } );
+			RegisterWorld( "ADDONWORLD", "jharkendar", { "Jharkendar", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "Jarkendar" } );
+			RegisterWorld( "DRAGONISLAND", "irdorath", { "Irdorath", "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ", "Irdorath" } );
 #endif
 		}
 
@@ -225,10 +225,10 @@ namespace GOTHIC_ENGINE {
 					sprintf( timeBuffer, "Day %d - %02d:%02d", day, hour, min );
 					break;
 				case RU:
-					sprintf( timeBuffer, "День %d - %02d:%02d", day, hour, min );
+					sprintf( timeBuffer, "пїЅпїЅпїЅпїЅ %d - %02d:%02d", day, hour, min );
 					break;
 				case PL:
-					sprintf( timeBuffer, "Dzieс %d - %02d:%02d", day, hour, min );
+					sprintf( timeBuffer, "DzieпїЅ %d - %02d:%02d", day, hour, min );
 					break;
 				}
 				ConvertString( timeBuffer, timeBuffer );
@@ -241,7 +241,7 @@ namespace GOTHIC_ENGINE {
 					sprintf( infoBuffer, "%s - %d Level", guildName.ToChar(), level );
 					break;
 				case RU:
-					sprintf( infoBuffer, "%s - %d ур.", guildName.ToChar(), level );
+					sprintf( infoBuffer, "%s - %d пїЅпїЅ.", guildName.ToChar(), level );
 					break;
 				case PL:
 					sprintf( infoBuffer, "%s - %d Poziom", guildName.ToChar(), level );
@@ -275,7 +275,7 @@ namespace GOTHIC_ENGINE {
 						sprintf( locationName, "Unknown Lands" );
 						break;
 					case RU:
-						sprintf( locationName, "Неизвестные Земли" );
+						sprintf( locationName, "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ" );
 						break;
 					case PL:
 						sprintf( locationName, "Nieznana Kraina" );
@@ -290,10 +290,10 @@ namespace GOTHIC_ENGINE {
 					sprintf( chapterInfo, " - Chapter %d", kapitel );
 					break;
 				case RU:
-					sprintf( chapterInfo, " - Глава %d", kapitel );
+					sprintf( chapterInfo, " - пїЅпїЅпїЅпїЅпїЅ %d", kapitel );
 					break;
 				case PL:
-					sprintf( chapterInfo, " - Rozdziaі %d", kapitel );
+					sprintf( chapterInfo, " - RozdziaпїЅ %d", kapitel );
 					break;
 				}
 				ConvertString( chapterInfo, chapterInfo );
@@ -318,7 +318,7 @@ namespace GOTHIC_ENGINE {
 				sprintf( gameState, "Menu" );
 				break;
 			case RU:
-				sprintf( gameState, "Меню" );
+				sprintf( gameState, "пїЅпїЅпїЅпїЅ" );
 				break;
 			case PL:
 				sprintf( gameState, "Menu" );

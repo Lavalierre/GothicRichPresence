@@ -2,7 +2,7 @@
 // Union HEADER file
 
 namespace GOTHIC_ENGINE {
-	
+
 
 	struct WorldInfo
 	{
