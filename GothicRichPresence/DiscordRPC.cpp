@@ -112,34 +112,26 @@ namespace GOTHIC_ENGINE {
 
   void GDiscordRPC::Update()
   {
-    DiscordRichPresence discordPresence;
-    memset( &discordPresence, 0, sizeof( discordPresence ) );
-
-    if ( strings.title.Length() )
-      discordPresence.details = strings.title;
-    discordPresence.startTimestamp = tStartTimestamp;
-    discordPresence.largeImageKey = images.menu;
+    RPCData data;
 
     if ( ogame && ogame->GetGameWorld() && player ) {
       // Ingame time
       if ( strings.day.Length() ) {
         int day, hour, min;
         ogame->GetTime( day, hour, min );
-        string minutes = (min > 9) ? Z min : "0" + Z min;
-        string smallImageText = string::Combine( "%s %u - %u:%s", strings.day, day, hour, minutes );
-        discordPresence.smallImageText = smallImageText;
-        discordPresence.smallImageKey = (hour >= 6 && hour < 20) ? images.day : images.night;
+        data.smallImageKey = (hour >= 6 && hour < 20) ? images.day : images.night;
+        data.smallImageText = string::Combine( "%s %u - %u:%s", strings.day, day, hour, (min > 9) ? A min : A "0" + A min );
       }
 
       // Hero guild and level
-      if ( strings.level.Length() && strings.chapter.Length() ) {
-        string state = string::Combine( "%z - %s %u", player->GetGuildName(), strings.level, player->level );
+      if ( strings.level.Length() ) {
+        data.state = string::Combine( "%z - %s %u", player->GetGuildName(), strings.level, player->level );
 
         // Adding current chapter info if kapitel variable is present
-        if ( auto sym = parser->GetSymbol( "kapitel" ) )
-          state = string::Combine( "%s - %s %u", state, strings.chapter, sym->single_intdata );
-
-        discordPresence.state = state;
+        if ( strings.chapter.Length() )
+          if ( auto sym = parser->GetSymbol( "kapitel" ) )
+            if ( int kapitel = sym->single_intdata )
+              data.state = string::Combine( "%s - %s %u", data.state, strings.chapter, kapitel );
       }
 
       // Location name and image
@@ -147,8 +139,8 @@ namespace GOTHIC_ENGINE {
       for ( WorldInfo world : vWorlds ) {
         // Must be exact the same names to avoid mistaking for example world.zen with newworld.zen
         if ( ogame->GetGameWorld()->GetWorldName().Compare( Z world.zen.Upper() ) ) {
-          discordPresence.largeImageKey = world.image;
-          discordPresence.largeImageText = world.name;
+          data.largeImageKey = world.image;
+          data.largeImageText = world.name;
           foundWorld = true;
           break;
         }
@@ -156,11 +148,28 @@ namespace GOTHIC_ENGINE {
 
       // Unknown location
       if ( !foundWorld && strings.unknownworld.Length() ) {
-        discordPresence.largeImageKey = images.unknown;
-        discordPresence.largeImageText = strings.unknownworld;
+        data.largeImageKey = images.unknown;
+        data.largeImageText = strings.unknownworld;
       }
     }
 
+    // Modification title when playing from gothic starter
+    if( strings.title.Length() )
+      data.details = strings.title;
+
+    // General image when not in game
+    if( !data.largeImageKey.Length() )
+      data.largeImageKey = images.menu;
+
+    DiscordRichPresence discordPresence;
+    memset( &discordPresence, 0, sizeof( discordPresence ) );
+    discordPresence.startTimestamp = tStartTimestamp;
+    discordPresence.state = data.state;
+    discordPresence.details = data.details;
+    discordPresence.largeImageKey = data.largeImageKey;
+    discordPresence.largeImageText = data.largeImageText;
+    discordPresence.smallImageKey = data.smallImageKey;
+    discordPresence.smallImageText = data.smallImageText;
     Discord_UpdatePresence( &discordPresence );
   }
 }

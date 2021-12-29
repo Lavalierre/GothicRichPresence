@@ -29,6 +29,16 @@ namespace GOTHIC_ENGINE {
     const string unknown = "unknown";
   };
 
+  struct RPCData
+  {
+    string state;
+    string details;
+    string largeImageKey;
+    string largeImageText;
+    string smallImageKey;
+    string smallImageText;
+  };
+
   class GDiscordRPC
   {
   private:
