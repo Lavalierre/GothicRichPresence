@@ -24,12 +24,6 @@ uint RTDynamicCast_MT = (uint)__RTDynamicCast;
 // Discord RPC headers
 #include "Discord/include/discord_register.h"
 #include "Discord/include/discord_rpc.h"
-#include <map>
-#include <vector>
-#include <initializer_list>
-#include <sstream>
-#include <algorithm>
-#include <codecvt>
 
 // Include headers
 #ifdef __G1

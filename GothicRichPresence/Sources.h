@@ -3,7 +3,6 @@
 
 // Automatically generated block
 #pragma region Includes
-#include "Utility.cpp"
 #include "DiscordRPC.cpp"
 #include "Plugin.cpp"
 #pragma endregion

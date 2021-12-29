@@ -1,43 +1,59 @@
 // Supported with union (c) 2020 Union team
 // Union HEADER file
 
+#define PLUGIN_NAME "GothicRichPresence"
+
 namespace GOTHIC_ENGINE {
+  struct WorldInfo
+  {
+    string zen;
+    string image;
+    string name;
+  };
 
+  struct RPCStrings
+  {
+    string title;
+    string day;
+    string level;
+    string chapter;
+    string unknownworld;
+  };
 
-	struct WorldInfo
-	{
-		std::string zenName;
-		std::string sImage;
-		std::vector<std::string> vAliases;
-	};
+  struct RPCImages
+  {
+    const string menu = "menu";
+    const string info = "info";
+    const string day = "day";
+    const string night = "night";
+    const string unknown = "unknown";
+  };
 
-	class GDiscordRPC
-	{
-	public:
+  class GDiscordRPC
+  {
+  private:
+    GDiscordRPC() = default;
+    static GDiscordRPC oInstance;
+    time_t tStartTimestamp{ 0 };
 
-		GDiscordRPC( const GDiscordRPC & ) = delete;
-		GDiscordRPC &operator=( GDiscordRPC & ) = delete;
-		static GDiscordRPC &Instance() { return oInstance; }
+    nlohmann::json config;
+    const string configFileName = "GothicRichPresence.json";
 
-		void Initialize();
-		void Update();
+    string language;
+    std::vector< WorldInfo > vWorlds;
+    RPCStrings strings;
+    RPCImages images;
 
-		void DetectLanguage();
+  public:
+    GDiscordRPC( const GDiscordRPC& ) = delete;
+    GDiscordRPC& operator=( GDiscordRPC& ) = delete;
+    static GDiscordRPC& Instance() { return oInstance; }
 
-		void RegisterWorld( std::string, std::string, std::initializer_list<std::string> );
-		void RegisterWorld( std::string, std::string, std::vector<std::string> );
-		void ParseConfig();
-		void ParseRPCFile();
-
-	private:
-
-		GDiscordRPC() = default;
-		static GDiscordRPC oInstance;
-		time_t tStartTimestamp{ 0 };
-		string sAppPublicKey;										// application public key
-		string sRPCFile;											// file name of rpc config
-		LangTags iLang{ LangTags::NONE };
-		std::vector< WorldInfo > vWorlds;
-	};
-
+    void Initialize();
+    void ParseConfig();
+    void ParseWorlds();
+    void ParseStrings();
+    string GetSysPackLanguage();
+    void Update();
+  };
 }

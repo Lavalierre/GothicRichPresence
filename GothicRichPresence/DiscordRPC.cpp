@@ -1,349 +1,166 @@
 // Supported with union (c) 2020 Union team
 // Union SOURCE file
-#include <sstream>
-#include <ctime>
-#include <codecvt>
 
 namespace GOTHIC_ENGINE {
 
-	using json = nlohmann::json;
-	GDiscordRPC GDiscordRPC::oInstance;
-	TEngineVersion engineVersion = Union.GetEngineVersion();
+  GDiscordRPC GDiscordRPC::oInstance;
 
-	void GDiscordRPC::Initialize()
-	{
-		// Default app keys
+  void GDiscordRPC::Initialize()
+  {
+    language = GetSysPackLanguage().Lower();
 
-#if defined __G1 || defined __G1A
-		sAppPublicKey = "831894054089523280";
+    ParseConfig();
+    ParseWorlds();
+    ParseStrings();
+
+    // Default app keys
+#if ENGINE >= Engine_G2
+    string AppId = "925674889350889482";
+#else
+    string AppId = "925673141609574401";
 #endif
 
-#if defined __G2 || defined __G2A
-		sAppPublicKey = "831893873164288031";
-#endif
+    if ( config["publickeyoverride"].is_string() )
+      AppId = config["publickeyoverride"].get<std::string>().c_str();
 
-		// Parsing config before actual initializing
+    // Init RPC with given app key (default or from the config)
+    DiscordEventHandlers handlers;
+    memset( &handlers, 0, sizeof( handlers ) );
+    Discord_Initialize( AppId, &handlers, false, NULL );
+    tStartTimestamp = std::time( nullptr );
+    Update();
+  }
 
-		ParseConfig();
+  string GDiscordRPC::GetSysPackLanguage()
+  {
+    string lang;
+    Union.GetSysPackOption().Read( lang, "CORE", "Language" );
+    return (lang.Length()) ? lang : "eng";
+  }
 
-		// Init RPC with given app key (default or from the config)
+  void GDiscordRPC::ParseConfig()
+  {
+    zoptions->ChangeDir( DIR_SYSTEM );
+    zFILE_VDFS* originFile = new zFILE_VDFS( configFileName );
 
-		DiscordEventHandlers handlers;
-		memset( &handlers, 0, sizeof( handlers ) );
-		Discord_Initialize( sAppPublicKey, &handlers, 0, NULL );
-		tStartTimestamp = std::time( nullptr );
+    if ( !originFile->Exists() ) {
+      delete originFile;
+      return;
+    }
 
-		// Register default worlds, if .json config is not parsed
-		if ( vWorlds.size() == 0 )
-		{
-#if defined __G1 || defined __G1A
-			RegisterWorld( "WORLD", "colony_day", { "Penal Colony", "�������", "Kolonia Karna", } );
-			RegisterWorld( "OLDMINE", "oldmine", { "Old Mine", "������ �����", "Stara Kopalnia" } );
-			RegisterWorld( "FREEMINE", "freemine", { "Free Mine", "��������� �����", "Wolna Kopalnia" } );
-			RegisterWorld( "ORCGRAVEYARD", "graveyard", { "Orc Graveyard", "�������� �����", "Cmentarzysko Ork�w" } );
-			RegisterWorld( "ORCTEMPEL", "orctempel", { "Sleeper Temple", "���� �������", "�wi�tynia �ni�cego" } );
-#endif
+    originFile->Open( false );
 
-#if defined __G2 || defined __G2A
-			RegisterWorld( "NEWWORLD", "khorinis", { "Khorinis", "�������", "Khorinis" } );
-			RegisterWorld( "OLDWORLD", "valley", { "Valley of Mines", "������ ��������", "G�rnicza Dolina" } );
-			RegisterWorld( "ADDONWORLD", "jharkendar", { "Jharkendar", "��������", "Jarkendar" } );
-			RegisterWorld( "DRAGONISLAND", "irdorath", { "Irdorath", "�������", "Irdorath" } );
-#endif
-		}
+    zSTRING line, buffer;
+    do {
+      originFile->Read( line );
+      buffer += line;
+    } while ( !originFile->Eof() );
 
-		DetectLanguage();
-	}
+    config = nlohmann::json::parse( buffer.ToChar() );
+  }
 
-	void GDiscordRPC::DetectLanguage()
-	{
-		// Do not detect sys language if it's already set through config
-		if ( iLang != LangTags::NONE ) return;
+  void GDiscordRPC::ParseWorlds()
+  {
+    if ( !config["worlds"].is_array() )
+      return;
 
-		if ( MAKELANGID( LANG_RUSSIAN, SUBLANG_DEFAULT ) == GetSystemDefaultLangID() )
-			iLang = LangTags::RU;
-		else if ( MAKELANGID( LANG_POLISH, SUBLANG_DEFAULT ) == GetSystemDefaultLangID() )
-			iLang = LangTags::PL;
-		else
-			iLang = LangTags::EN;
-	}
+    if ( config["worlds"].size() < 1 )
+      return;
 
-	void GDiscordRPC::RegisterWorld( std::string zen, std::string image, std::initializer_list<std::string> names )
-	{
-		for ( auto it = vWorlds.begin(); it != vWorlds.end(); it++ )
-		{
-			if ( ( *it ).zenName == zen )
-				vWorlds.erase( it );
-		}
+    for ( size_t i = 0; i < config["worlds"].size() - 1; i++ ) {
+      if ( !config["worlds"][i].is_object() )
+        continue;
 
-		std::vector<std::string> vNames;
-		for ( auto it = names.begin(); it != names.end(); it++ )
-			vNames.push_back( *it );
+      if ( !config["worlds"][i]["zen"].is_string() )
+        continue;
 
-		WorldInfo newWorld;
-		newWorld.zenName = zen;
-		newWorld.sImage = image;
-		newWorld.vAliases = vNames;
-		vWorlds.push_back( newWorld );
-	}
+      if ( !config["worlds"][i]["image"].is_string() )
+        continue;
 
-	void GDiscordRPC::RegisterWorld( std::string zen, std::string image, std::vector<std::string> vNames )
-	{
-		for ( auto it = vWorlds.begin(); it != vWorlds.end(); it++ )
-		{
-			if ( ( *it ).zenName == zen )
-				vWorlds.erase( it );
-		}
+      if ( !config["worlds"][i]["name"].is_object() )
+        continue;
 
-		std::transform( zen.begin(), zen.end(), zen.begin(), ::toupper );
+      if ( !config["worlds"][i]["name"][language.ToChar()].is_string() )
+        continue;
 
-		WorldInfo newWorld;
-		newWorld.zenName = zen;
-		newWorld.sImage = image;
-		newWorld.vAliases = vNames;
-		vWorlds.push_back( newWorld );
-	}
+      WorldInfo world;
+      world.zen = A config["worlds"][i]["zen"].get<std::string>().c_str();
+      world.image = A config["worlds"][i]["image"].get<std::string>().c_str();
+      world.name = A config["worlds"][i]["name"][language.ToChar()].get<std::string>().c_str();
+      vWorlds.push_back( world );
+    }
+  }
 
-	void GDiscordRPC::ParseConfig()
-	{
-		COption &gameOptions = Union.GetGameOption();
+  void GDiscordRPC::ParseStrings()
+  {
+#define GETRPCSTRING(x) ( ( config["strings"][x].is_object() && config["strings"][x][language.ToChar()].is_string() ) ? A config["strings"][x][language.ToChar()].get<std::string>().c_str() : "" )
 
-		string appKey, rpcFileName, language;
+    // Modification title when playing from gothic starter
+    if ( zgameoptions && !Union.GetGameIni().Compare( "gothicgame.ini" ) )
+      strings.title = A zgameoptions->ReadString( "Info", "Title", "Unknown Title" );
 
-		gameOptions.Read( language, "GothicRichPresence", "Lang" );
-		gameOptions.Read( appKey, "GothicRichPresence", "AppKey" );
-		gameOptions.Read( rpcFileName, "GothicRichPresence", "ConfigFile" );
+    if ( !config["strings"].is_object() )
+      return;
 
-		!appKey.IsEmpty() ? sAppPublicKey = appKey : false;
-		!rpcFileName.IsEmpty() ? sRPCFile = rpcFileName : false;
+    strings.day = GETRPCSTRING( "day" );
+    strings.level = GETRPCSTRING( "level" );
+    strings.chapter = GETRPCSTRING( "chapter" );
+    strings.unknownworld = GETRPCSTRING( "unknownworld" );
 
-		std::string sLanguage = language.ToChar();
-		std::transform( sLanguage.begin(), sLanguage.end(), sLanguage.begin(), ::toupper );
+#undef GETRPCSTRING
+  }
 
-		if ( !language.IsEmpty() )
-		{
-			if ( sLanguage == "RU" )
-				iLang = LangTags::RU;
-			else if ( sLanguage == "PL" )
-				iLang = LangTags::PL;
-			else
-				iLang = LangTags::EN;
-		}
+  void GDiscordRPC::Update()
+  {
+    DiscordRichPresence discordPresence;
+    memset( &discordPresence, 0, sizeof( discordPresence ) );
 
-		if ( !sRPCFile.IsEmpty() )
-			ParseRPCFile();
-	}
+    if ( strings.title.Length() )
+      discordPresence.details = strings.title;
+    discordPresence.startTimestamp = tStartTimestamp;
+    discordPresence.largeImageKey = images.menu;
 
-	void GDiscordRPC::ParseRPCFile()
-	{
-  
-		// Reading file
-		zoptions->ChangeDir( DIR_SYSTEM );
-		zFILE_VDFS *originFile = zNEW( zFILE_VDFS )( sRPCFile );
+    if ( ogame && ogame->GetGameWorld() && player ) {
+      // Ingame time
+      if ( strings.day.Length() ) {
+        int day, hour, min;
+        ogame->GetTime( day, hour, min );
+        string minutes = (min > 9) ? Z min : "0" + Z min;
+        string smallImageText = string::Combine( "%s %u - %u:%s", strings.day, day, hour, minutes );
+        discordPresence.smallImageText = smallImageText;
+        discordPresence.smallImageKey = (hour >= 6 && hour < 20) ? images.day : images.night;
+      }
 
-		if ( !originFile->Exists() )
-		{
-			delete originFile;
-			return;
-		}
+      // Hero guild and level
+      if ( strings.level.Length() && strings.chapter.Length() ) {
+        string state = string::Combine( "%z - %s %u", player->GetGuildName(), strings.level, player->level );
 
-		originFile->Open( false );
+        // Adding current chapter info if kapitel variable is present
+        if ( auto sym = parser->GetSymbol( "kapitel" ) )
+          state = string::Combine( "%s - %s %u", state, strings.chapter, sym->single_intdata );
 
-		zSTRING line, buffer;
-		do
-		{
-			originFile->Read( line );
-			buffer += line;
-		} while ( !originFile->Eof() );
+        discordPresence.state = state;
+      }
 
-		// JSON parsing
-		auto jsonFile = json::parse( buffer.ToChar() );
+      // Location name and image
+      bool foundWorld = false;
+      for ( WorldInfo world : vWorlds ) {
+        // Must be exact the same names to avoid mistaking for example world.zen with newworld.zen
+        if ( ogame->GetGameWorld()->GetWorldName().Compare( Z world.zen.Upper() ) ) {
+          discordPresence.largeImageKey = world.image;
+          discordPresence.largeImageText = world.name;
+          foundWorld = true;
+          break;
+        }
+      }
 
-		std::string worldList;
-		if ( !jsonFile[ "worldList" ].is_string() ) return;
-		worldList = jsonFile[ "worldList" ].get<std::string>();
-		std::vector<std::string> zenNames = ExplodeString( worldList, ',', true );
+      // Unknown location
+      if ( !foundWorld && strings.unknownworld.Length() ) {
+        discordPresence.largeImageKey = images.unknown;
+        discordPresence.largeImageText = strings.unknownworld;
+      }
+    }
 
-		std::string sAliases, sImage;
-		for ( std::string zen : zenNames )
-		{
-			if ( jsonFile[ zen ].is_object() )
-			{
-				if ( !jsonFile[ zen ][ "aliases" ].is_string() || !jsonFile[ zen ][ "image" ].is_string() )
-					continue;
-				sAliases = jsonFile[ zen ][ "aliases" ].get<std::string>();
-				sImage = jsonFile[ zen ][ "image" ].get<std::string>();
-
-				// Splitting aliases by ',' delimiter and then checking language tag in {}
-				std::vector<std::string> vAliases = ExplodeString( sAliases, ',' );
-				std::vector<std::string> vActualAliases( MAX_LANGUAGES );
-				for ( std::string alias : vAliases )
-				{
-
-					LangTags lang = ReadAliasTag( alias );
-
-					if (lang != LangTags::NONE )
-						vActualAliases[ int( lang ) ] = alias;
-				}
-				RegisterWorld( zen, sImage, vActualAliases );
-			}
-		}
-	}
-
-	void GDiscordRPC::Update()
-	{
-		DiscordRichPresence discordPresence;
-		memset( &discordPresence, 0, sizeof( discordPresence ) );
-
-		if ( gameMan->IsGameRunning() )
-		{
-			if ( ogame->GetGameWorld() )
-			{
-				zSTRING wName		= ogame->GetGameWorld()->GetWorldName();
-				zSTRING guildName	= player->GetGuildName();
-				int level			= player->level;
-				int kapitel			= 0;
-				int day, hour, min;
-
-				ogame->GetTime( day, hour, min );									// Parsing current time
-
-				if ( parser->GetSymbol( "kapitel" ) )								// Parsing current chapter
-					kapitel = parser->GetSymbol( "kapitel" )->single_intdata;
-
-				// ** Main RPC variables ** //
-				char timeBuffer[ 128 ];
-				char infoBuffer[ 128 ];
-				char imageKey[ 128 ];
-				char locationName[ 128 ];
-				char chapterInfo[ 128 ];
-
-				// *** TIME INFO *** //
-
-				switch ( iLang )
-				{
-				case EN:
-					sprintf( timeBuffer, "Day %d - %02d:%02d", day, hour, min );
-					break;
-				case RU:
-					sprintf( timeBuffer, "���� %d - %02d:%02d", day, hour, min );
-					break;
-				case PL:
-					sprintf( timeBuffer, "Dzie� %d - %02d:%02d", day, hour, min );
-					break;
-				}
-				ConvertString( timeBuffer, timeBuffer );
-
-				// *** CHARACTER INFO *** //
-
-				switch ( iLang )
-				{
-				case EN:
-					sprintf( infoBuffer, "%s - %d Level", guildName.ToChar(), level );
-					break;
-				case RU:
-					sprintf( infoBuffer, "%s - %d ��.", guildName.ToChar(), level );
-					break;
-				case PL:
-					sprintf( infoBuffer, "%s - %d Poziom", guildName.ToChar(), level );
-					break;
-				}
-				ConvertString( infoBuffer, infoBuffer );
-
-				// *** LOCATION & CHAPTER INFO *** //
-
-				for ( WorldInfo world : vWorlds )
-				{
-					// Must be exact the same names to avoid mistaking for example world.zen with newworld.zen
-					if ( wName.Compare( world.zenName.c_str() ) )
-					{
-						sprintf( imageKey, world.sImage.c_str() );
-						sprintf( locationName, world.vAliases[ iLang ].c_str() );
-
-						// In case if it's default worlds
-						if ( !is_utf8( locationName ) ) {
-							ConvertString( locationName, locationName );
-            }  
-					}
-				}
-				if ( locationName == NULL ) {
-
-					sprintf( imageKey, "menu" );
-
-					switch ( iLang )
-					{
-					case EN:
-						sprintf( locationName, "Unknown Lands" );
-						break;
-					case RU:
-						sprintf( locationName, "����������� �����" );
-						break;
-					case PL:
-						sprintf( locationName, "Nieznana Kraina" );
-						break;
-					}
-					ConvertString( locationName, locationName );
-				}
-
-				switch ( iLang )
-				{
-				case EN:
-					sprintf( chapterInfo, " - Chapter %d", kapitel );
-					break;
-				case RU:
-					sprintf( chapterInfo, " - ����� %d", kapitel );
-					break;
-				case PL:
-					sprintf( chapterInfo, " - Rozdzia� %d", kapitel );
-					break;
-				}
-				ConvertString( chapterInfo, chapterInfo );
-
-				strcat( locationName, chapterInfo );
-
-				// *** SUMMARISING INFO *** //
-
-				discordPresence.state = infoBuffer;
-				discordPresence.largeImageKey = imageKey;
-				discordPresence.largeImageText = locationName;
-				discordPresence.smallImageKey = "info";
-				discordPresence.smallImageText = timeBuffer;
-			}
-		}
-		else
-		{
-			char gameState[ 128 ];
-			switch ( iLang )
-			{
-			case EN:
-				sprintf( gameState, "Menu" );
-				break;
-			case RU:
-				sprintf( gameState, "����" );
-				break;
-			case PL:
-				sprintf( gameState, "Menu" );
-				break;
-			}
-			ConvertString( gameState, gameState );
-
-			discordPresence.state = gameState;
-			discordPresence.largeImageKey = "menu";
-			discordPresence.smallImageKey = "";
-			discordPresence.smallImageText = "";
-		}
-
-		if ( zgameoptions )
-		{
-			string gameTitle = A zgameoptions->ReadString( "Info", "Title", "Unknown Title" );
-			discordPresence.details = gameTitle;
-		}
-		else
-		{
-			discordPresence.details = "";
-		}
-
-		discordPresence.startTimestamp = tStartTimestamp;
-
-		Discord_UpdatePresence( &discordPresence );
-	}
+    Discord_UpdatePresence( &discordPresence );
+  }
 }

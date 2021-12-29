@@ -214,17 +214,11 @@
     <Filter Include="Engine SDK\4. Gothic II NoTR\Overloads">
       <UniqueIdentifier>{225cc81e-eae0-432b-9f39-e93512644977}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Plugin\Workspace\Discord">
-      <UniqueIdentifier>{a771e5b7-b3ab-41b3-815a-23b30ca0eb95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Plugin\Workspace\Discord\Headers">
-      <UniqueIdentifier>{8bd486e4-ddb3-4323-8da3-f5b8e55171c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Plugin\Workspace\Discord\Source">
-      <UniqueIdentifier>{70c69a53-0129-43a7-b29d-04b1d25576c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Plugin\Workspace\DiscordRPC">
       <UniqueIdentifier>{4996c68a-aa74-4da4-8b36-90b96397542a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plugin\DiscordSDK">
+      <UniqueIdentifier>{c9c8bcd4-aca1-4cae-9fb4-09bb0dcdac1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -270,20 +264,20 @@
     <ClCompile Include="ZenGin\Gothic_II_Addon\Statics_G2A.cpp">
       <Filter>Engine SDK\4. Gothic II NoTR\Overloads</Filter>
     </ClCompile>
-    <ClCompile Include="Discord\src\discord_rpc.cpp">
-      <Filter>Plugin\Workspace\Discord\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Discord\src\rpc_connection.cpp">
-      <Filter>Plugin\Workspace\Discord\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Discord\src\serialization.cpp">
-      <Filter>Plugin\Workspace\Discord\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Discord\src\connection_win.cpp">
-      <Filter>Plugin\Workspace\Discord\Source</Filter>
+      <Filter>Plugin\DiscordSDK</Filter>
     </ClCompile>
     <ClCompile Include="Discord\src\discord_register_win.cpp">
-      <Filter>Plugin\Workspace\Discord\Source</Filter>
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Discord\src\discord_rpc.cpp">
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Discord\src\rpc_connection.cpp">
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClCompile>
+    <ClCompile Include="Discord\src\serialization.cpp">
+      <Filter>Plugin\DiscordSDK</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2804,38 +2798,32 @@
     <ClInclude Include="Plugin.cpp">
       <Filter>Plugin\Workspace\Plugin</Filter>
     </ClInclude>
-    <ClInclude Include="Discord\src\msg_queue.h">
-      <Filter>Plugin\Workspace\Discord\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Discord\src\rpc_connection.h">
-      <Filter>Plugin\Workspace\Discord\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Discord\src\serialization.h">
-      <Filter>Plugin\Workspace\Discord\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Discord\src\backoff.h">
-      <Filter>Plugin\Workspace\Discord\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Discord\src\connection.h">
-      <Filter>Plugin\Workspace\Discord\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="Discord\include\discord_register.h">
-      <Filter>Plugin\Workspace\Discord</Filter>
-    </ClInclude>
-    <ClInclude Include="Discord\include\discord_rpc.h">
-      <Filter>Plugin\Workspace\Discord</Filter>
-    </ClInclude>
     <ClInclude Include="DiscordRPC.cpp">
       <Filter>Plugin\Workspace\DiscordRPC</Filter>
     </ClInclude>
     <ClInclude Include="DiscordRPC.h">
       <Filter>Plugin\Workspace\DiscordRPC</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.cpp">
-      <Filter>Plugin\Workspace\DiscordRPC</Filter>
+    <ClInclude Include="Discord\src\serialization.h">
+      <Filter>Plugin\DiscordSDK</Filter>
     </ClInclude>
-    <ClInclude Include="Const.h">
-      <Filter>Plugin\Workspace\DiscordRPC</Filter>
+    <ClInclude Include="Discord\src\backoff.h">
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Discord\src\connection.h">
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Discord\include\discord_register.h">
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Discord\include\discord_rpc.h">
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Discord\src\msg_queue.h">
+      <Filter>Plugin\DiscordSDK</Filter>
+    </ClInclude>
+    <ClInclude Include="Discord\src\rpc_connection.h">
+      <Filter>Plugin\DiscordSDK</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
