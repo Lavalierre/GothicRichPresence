@@ -53,6 +53,7 @@ namespace GOTHIC_ENGINE {
     std::vector< WorldInfo > vWorlds;
     RPCStrings strings;
     RPCImages images;
+    bool usingCustomKey;
 
   public:
     GDiscordRPC( const GDiscordRPC& ) = delete;

@@ -20,8 +20,14 @@ namespace GOTHIC_ENGINE {
     string AppId = "925673141609574401";
 #endif
 
-    if ( config["publickeyoverride"].is_string() )
-      AppId = config["publickeyoverride"].get<std::string>().c_str();
+    if ( config["publickeyoverride"].is_string() ) {
+      string publickeyoverride = config["publickeyoverride"].get<std::string>().c_str();
+      if ( publickeyoverride.Length() ) {
+        AppId = publickeyoverride;
+        usingCustomKey = true;
+      }
+    }
+
 
     // Init RPC with given app key (default or from the config)
     DiscordEventHandlers handlers;
@@ -95,8 +101,8 @@ namespace GOTHIC_ENGINE {
   {
 #define GETRPCSTRING(x) ( ( config["strings"][x].is_object() && config["strings"][x][language.ToChar()].is_string() ) ? A config["strings"][x][language.ToChar()].get<std::string>().c_str() : "" )
 
-    // Modification title when playing from gothic starter
-    if ( zgameoptions && !Union.GetGameIni().Compare( "gothicgame.ini" ) )
+    // Modification title when playing from gothic starter and not using custom application
+    if ( zgameoptions && !Union.GetGameIni().Compare( "gothicgame.ini" ) && !usingCustomKey )
       strings.title = A zgameoptions->ReadString( "Info", "Title", "Unknown Title" );
 
     if ( !config["strings"].is_object() )
@@ -153,12 +159,12 @@ namespace GOTHIC_ENGINE {
       }
     }
 
-    // Modification title when playing from gothic starter
-    if( strings.title.Length() )
+    // Modification title when playing from gothic starter and not using custom application
+    if ( strings.title.Length() )
       data.details = strings.title;
 
     // General image when not in game
-    if( !data.largeImageKey.Length() )
+    if ( !data.largeImageKey.Length() )
       data.largeImageKey = images.menu;
 
     DiscordRichPresence discordPresence;
