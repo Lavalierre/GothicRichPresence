@@ -9,20 +9,20 @@ This is [Discord Rich Presence](https://discord.com/rich-presence) plugin made i
 # Usage for regular users
 
 1. Download and install [Union](https://worldofplayers.ru/threads/40376/).
-2. Download `GothicRichPresence.vdf` file from the [latest release](/releases) and place it in `<GothicPath>\Data\Plugins\` folder.
+2. Download `GothicRichPresence.vdf` file from the [latest release](../../releases) and place it in `<GothicPath>\Data\Plugins\` folder.
 3. Remember to add Gothic to games detected by Discord if you haven't already.
 
 # Usage for mod developers
 
 You can easily implement this plugin into your mod to change images or handle more worlds.
 
-### 1. First you have to set up your own Discord application:
+#### 1. First you have to set up your own Discord application:
 
 - Log-In to [Discord Developer Portal](https://discord.com/developers/applications) and go to `Applications` section.
 - Create `New Application` and set a name. This name will be displayed as a title on rich presence and should be named `Gothic: Mod Name` or somewhat similar.
 - Copy `Application ID`, it will be needed later.
 
-### 2. Upload and set your own images for worlds specified later in the config. Additionally some images have constant names, and you need to upload them for proper usage:
+#### 2. Upload and set your own images for worlds specified later in the config. Additionally some images have constant names, and you need to upload them for proper usage:
 
 - Image with name `menu` will be displayed when player currently is in menu, or in unknown location.
 - Image with name `info`, `day` and `night` will be displayed in the bottom-right corner of your location pic, and it contains information about game time.
@@ -30,9 +30,9 @@ You can easily implement this plugin into your mod to change images or handle mo
 - One image for every `zen` in your mod. Those images will be used as a cover when player is in this location.
 - Remember to also set `App Icon` and `Cover Image`.
 
-### 3. Now you need to create a `GothicRichPresence.json` config file, which you can put right into your `.vdf`/`.mod` file in the `System\` folder. I advise editing default config that can be downloaded in [releases](/releases).
+#### 3. Now you need to create a `GothicRichPresence.json` config file, which you can put right into your `.vdf`/`.mod` file in the `System\` folder. I advise editing default config that can be downloaded in [releases](../../releases). And don't use zipped `.vdf`/`.mod`.
 
-### 4. Create `publickeyoverride` and copy `APPLICATION ID` from [Discord Developer Portal](https://discord.com/developers/applications) as it's value as shown below.
+#### 4. Create `publickeyoverride` and copy `APPLICATION ID` from [Discord Developer Portal](https://discord.com/developers/applications) as it's value as shown below.
 
 ```json
 {
@@ -42,7 +42,7 @@ You can easily implement this plugin into your mod to change images or handle mo
 }
 ```
 
-### 5. `strings` object contains translations for general strings used by the plugin. I recommend not to change them.
+#### 5. `strings` object contains translations for general strings used by the plugin. I recommend not to change them.
 
 ```json
 {
@@ -77,7 +77,7 @@ You can easily implement this plugin into your mod to change images or handle mo
 }
 ```
 
-### 6. `worlds` array contains names and images for all `zen`'s.
+#### 6. `worlds` array contains names and images for all `zen`'s.
 
 ```json
 {
