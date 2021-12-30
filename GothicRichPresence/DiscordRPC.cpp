@@ -131,7 +131,8 @@ namespace GOTHIC_ENGINE {
 
       // Hero guild and level
       if ( strings.level.Length() ) {
-        data.state = string::Combine( "%z - %s %u", player->GetGuildName(), strings.level, player->level );
+        string guild = A ansi_to_utf8( player->GetGuildName().ToChar() ).c_str();
+        data.state = string::Combine( "%s - %s %u", guild, strings.level, player->level );
 
         // Adding current chapter info if kapitel variable is present
         if ( strings.chapter.Length() )

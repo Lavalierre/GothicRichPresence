@@ -2825,6 +2825,9 @@
     <ClInclude Include="Discord\src\rpc_connection.h">
       <Filter>Plugin\DiscordSDK</Filter>
     </ClInclude>
+    <ClInclude Include="Utility.cpp">
+      <Filter>Plugin\Workspace\DiscordRPC</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".build_settings.inl">
