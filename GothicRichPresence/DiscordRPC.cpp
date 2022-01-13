@@ -73,26 +73,26 @@ namespace GOTHIC_ENGINE {
     if ( config["worlds"].size() < 1 )
       return;
 
-    for ( size_t i = 0; i < config["worlds"].size() - 1; i++ ) {
-      if ( !config["worlds"][i].is_object() )
+    for ( auto& el : config["worlds"].items() ) {
+      if ( !el.value().is_object() )
         continue;
 
-      if ( !config["worlds"][i]["zen"].is_string() )
+      if ( !el.value()["zen"].is_string() )
         continue;
 
-      if ( !config["worlds"][i]["image"].is_string() )
+      if ( !el.value()["image"].is_string() )
         continue;
 
-      if ( !config["worlds"][i]["name"].is_object() )
+      if ( !el.value()["name"].is_object() )
         continue;
 
-      if ( !config["worlds"][i]["name"][language.ToChar()].is_string() )
+      if ( !el.value()["name"][language.ToChar()].is_string() )
         continue;
 
       WorldInfo world;
-      world.zen = A config["worlds"][i]["zen"].get<std::string>().c_str();
-      world.image = A config["worlds"][i]["image"].get<std::string>().c_str();
-      world.name = A config["worlds"][i]["name"][language.ToChar()].get<std::string>().c_str();
+      world.zen = A el.value()["zen"].get<std::string>().c_str();
+      world.image = A el.value()["image"].get<std::string>().c_str();
+      world.name = A el.value()["name"][language.ToChar()].get<std::string>().c_str();
       vWorlds.push_back( world );
     }
   }
